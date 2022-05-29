@@ -31,6 +31,7 @@ beq $t0,2, subt
 beq $t0,3, multi
 beq $t0,4, divide
 beq $t0,5, exponent
+beq $t0,6, root
 
 
 # Operacoes
@@ -63,6 +64,33 @@ exponent:
         blt $t3,$t2,exploop # if index is less than the power, then repeat the loop
     move $a0, $t4 # move the result to print register
     b print
+
+root:
+    # t1 - base
+    # t2 - root power
+    # t3 - index
+
+    #base case
+    li $a0,0
+    beq $t1,0,print # if the base is zero
+
+    li $t3,1
+    rootloop:
+        li $t4,0 # inner loop index
+        li $t5,1 # temp variable
+        rootloop2: # Multiply index by itself "root power" times
+            mul $t5,$t5,$t3
+            add $t4,$t4,1 # increment inner loop index
+            blt $t4,$t2,rootloop2
+        
+        move $a0,$t3
+        sub $a0,$a0,1
+        bgt $t5,$t1,print # if index is greater than the base, index-1 was the approximation
+        add $t3,$t3,1 # increment index
+        b rootloop
+
+
+
 
 print: 
 li $v0,1
