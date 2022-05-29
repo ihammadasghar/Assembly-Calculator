@@ -12,47 +12,57 @@ li $v0,5
 syscall 
 move $t0,$v0 #to contains the input of the user
 
-# Operations
-li $t1,1
-li $t2,2
-li $t3,3
-li $t4,4
 
 # Take numbers as input
-
 # save num A
 li $v0,5
 syscall 
-move $t5,$v0
+move $t1,$v0
 
 # save num B
 li $v0,5
 syscall 
-move $t6,$v0
+move $t2,$v0
 
 
 # choosing operation number
-beq $t0,$t1,soma
-beq $t0,$t2, subt
-beq $t0,$t3, multi
-beq $t0,$t4, divide
+beq $t0,1,soma
+beq $t0,2, subt
+beq $t0,3, multi
+beq $t0,4, divide
+beq $t0,5, exponent
+
 
 # Operacoes
 soma:
-add $a0,$t5,$t6  # add location, num1, num2
+add $a0,$t1,$t2  # add location, num1, num2
 b print
 
 subt:
-sub $a0,$t5,$t6
+sub $a0,$t1,$t2
 b print
 
 divide:
-div $a0,$t5,$t6
+div $a0,$t1,$t2
 b print
 
 multi:
-mul $a0,$t5,$t6
-#  Nothing to skip, so we dont use "b print"
+mul $a0,$t1,$t2
+b print
+
+exponent:
+    # t1 - base
+    # t2 - power
+    # t3 - loop index
+    # t4 - result
+    li $t3,0
+    li $t4, 1
+    exploop:
+        mul $t4,$t4,$t1 # multiply base by itself
+        add $t3,$t3,1 # increment index by 1
+        blt $t3,$t2,exploop # if index is less than the power, then repeat the loop
+    move $a0, $t4 # move the result to print register
+    b print
 
 print: 
 li $v0,1
