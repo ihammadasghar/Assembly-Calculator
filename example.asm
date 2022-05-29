@@ -89,6 +89,25 @@ root:
         add $t3,$t3,1 # increment index
         b rootloop
 
+cos:
+    # t1 - x
+    # t5 - x raised to some power
+    # t6 - approximation level
+
+    li $t6,1000
+    li $t2,1 # const
+    li $t3,2 # loop index
+    cosloop:
+        li $t4,0 # inner loop index
+        li $t5,1 # result variable
+        cosloop2: # Multiply index by itself "root power" times
+            mul $t5,$t5,$t1
+            add $t4,$t4,1 # increment inner loop index
+            blt $t4,$t3,cosloop2
+
+        li $t7,0 # inner loop index
+        li $t8,1 # result variable
+        cosloop3: # get factorial of index
 
 
 
