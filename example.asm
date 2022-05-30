@@ -32,6 +32,7 @@ beq $t0,3, multi
 beq $t0,4, divide
 beq $t0,5, exponent
 beq $t0,6, root
+beq $t0,7, cos
 
 
 # Operacoes
@@ -95,22 +96,49 @@ cos:
     # t6 - approximation level
 
     li $t6,1000
-    li $t2,1 # const
+    
+    # HAVE TO CONVERT INT 1 TO FLOAT BECAUSE LI.S DOESNT WORK WITH MARS
+    li $t4, 1
+    mtc1 $t4, $f2
+    cvt.s.w $f2, $f2
+    
+
     li $t3,2 # loop index
     cosloop:
         li $t4,0 # inner loop index
-        li $t5,1 # result variable
+        li $t5,1 # result variable for exponenet
         cosloop2: # Multiply index by itself "root power" times
             mul $t5,$t5,$t1
             add $t4,$t4,1 # increment inner loop index
             blt $t4,$t3,cosloop2
 
-        li $t7,0 # inner loop index
-        li $t8,1 # result variable
+        move $t4,$t3 # inner loop index
+        li $t7,1 # result variable for factorial
         cosloop3: # get factorial of index
+            mul $t5,$t5,$t4
+            sub $t4,$t4,1 # descrement the inner index
+            bgt $t4,1,cosloop3
+        
+        # Convert to float
+        mtc1 $t5, $f6
+        cvt.s.w $f6, $f6
 
+        # Convert to float
+        mtc1 $t7, $f8
+        cvt.s.w $f8, $f8
+
+        div.s $f4,$f6,$f8 # divide exponenet result by factorial result
+        sub.s $f2,$f2,$f4 # subtract from the cos final result
+        add $t3,$t3,2 # increment the index
+        blt $t3,$t6,cosloop # check if the loop should end
+    mov.s $f12,$f2
+    b printfloat
 
 
 print: 
 li $v0,1
+syscall
+
+printfloat:
+li $v0,2
 syscall
