@@ -21,7 +21,10 @@ beq $t0,4, divide
 beq $t0,5, exponent
 beq $t0,6, root
 beq $t0,7, cos
+beq $t0,8, sin
 
+
+inputfloatint:
 
 # Operacoes
 soma:
@@ -201,14 +204,73 @@ cos:
         add $t3,$t3,2 # increment the index
         blt $t3,$t6,cosloop # check if the loop should end
     mov.s $f12,$f2
+
     b printfloat
 
+sin:
+    # Take input x
+    li $v0,6
+    syscall 
+
+    # f0 - x
+    # t6 - approximation level
+    li $t6,10
+    
+    # HAVE TO CONVERT INT 1 TO FLOAT BECAUSE LI.S DOESNT WORK WITH MARS
+    mov.s $f2,$f0 # final result variable
+
+    li $t3,3 # loop index
+    li $t0,1 # 1 - subtract series, 0 - add series
+    sinloop:
+        # HAVE TO CONVERT INT 1 TO FLOAT BECAUSE LI.S DOESNT WORK WITH MARS
+        li $t4, 1
+        mtc1 $t4, $f1
+        cvt.s.w $f1, $f1
+        
+        li $t4, 0 # inner index
+        sinloop2: # Multiply index by itself "root power" times
+            mul.s $f1,$f1,$f0
+            add $t4,$t4,1 # increment inner loop index
+            blt $t4,$t3,sinloop2
+
+
+        move $t4,$t3 # inner loop index
+        li $t7,1 # result variable for factorial
+        sinloop3: # get factorial of index
+            mul $t7,$t7,$t4
+            sub $t4,$t4,1 # decrement the inner index
+            bgt $t4,1,sinloop3
+
+        # Convert t7(factorial result) to float
+        mtc1 $t7, $f8
+        cvt.s.w $f8, $f8
+
+        div.s $f4,$f1,$f8 # divide exponenet result by factorial result
+
+        # if t8 is 1 subtract from result
+        beq $t0,1,subtractFromRes2
+        # else
+            add.s $f2,$f2,$f4
+            li $t0,1
+            b continue2
+
+        subtractFromRes2:
+            sub.s $f2,$f2,$f4 # subtract from the cos final result
+            li $t0,0 
+            
+
+        continue2:
+        add $t3,$t3,2 # increment the index
+        blt $t3,$t6,sinloop # check if the loop should end
+    mov.s $f12,$f2
+    
+    b printfloat
 
 print: 
-li $v0,1
-syscall
+    li $v0,1
+    syscall
 
 
 printfloat:
-li $v0,2
-syscall
+    li $v0,2
+    syscall
