@@ -1,18 +1,11 @@
 .data
-empty: .space 16
 res: .asciiz "result = "
-menu: .asciiz "\n Choose the number operation:\n 1 - ADD,  2 - SUB,  3 - MUL,  4 - DIV\n 5 - EXP,  6 - ROOT,  7 - COS,  8 - SIN\n 9 - Dec to Bin,  10 - Dec to Hex\n 11 - Bin to Dec,  12 - Bin to Hex\n 13 - Hex to Dec,  14 - Hex to Binary"
+menu: .asciiz "\n Choose the number operation:\n 1 - ADD,  2 - SUB,  3 - MUL,  4 - DIV\n  5 - EXP,  6 - ROOT,  7 - COS,  8 - SIN"
 nextline: .asciiz "\n\nOperation number: "
 addstr: .asciiz "ADD(a,b):\n"
 substr: .asciiz "SUB(a,b):\n"
 mulstr: .asciiz "MUL(a,b):\n"
 divstr: .asciiz "DIV(a,b):\n"
-DecToBinStr: .asciiz "DecToBin(Decimal):\n"
-DecToHexStr: .asciiz "DecToHex(Decimal):\n"
-BinToDecStr: .asciiz "BinToDec(Binary):\n"
-BinToHexStr: .asciiz "BinToHex(Binary):\n"
-HexToDecStr: .asciiz "BinToDec(Hex):\n"
-HexToBinStr: .asciiz "HexToBin(Hex):\n"
 expstr: .asciiz "EXP(base, power):\n"
 rootstr: .asciiz "ROOT(base, power):\n"
 cosstr: .asciiz "COS(X):\n"
@@ -48,21 +41,9 @@ start:
     beq $t0,6, root
     beq $t0,7, cos
     beq $t0,8, sin
-    beq $t0,9, decToBin
-    beq $t0,10, decToHex
-    beq $t0,11, binToDec
-    beq $t0,12, binToHex
-
-# Getting one input integer from the user
-oneIntInput:
-    # save num A
-    li $v0,5
-    syscall 
-    move $a1,$v0
-    jr $ra
 
 # Getting one input float from the user
-oneFloatInput:
+oneinput:
     # save num A
     li $v0,6
     syscall 
@@ -135,109 +116,6 @@ multi:
     multfunc:
         mul $v1,$a1,$a2
         jr $ra
-
-decToBin:
-    # print operation name
-    la $a0,DecToBinStr
-    jal printmessage
-
-    jal oneIntInput
-
-    #  Print result message
-    la $a0,res
-    jal printmessage
-
-    # save result and print
-    li $v0, 35
-    move $a0,$a1
-
-    b start
-
-decToHex:
-    # print operation name
-    la $a0,DecToHexStr
-    jal printmessage
-
-    jal oneIntInput
-
-    #  Print result message
-    la $a0,res
-    jal printmessage
-
-    # save result and print
-    li $v0, 34
-    move $a0,$a1
-
-    b start
-
-binToDec:
-    # Print function string
-    la $a0,BinToDecStr
-    jal printmessage
-
-    jal binToDecFunc
-    #  Print result message
-    b print
-
-    binToDecFunc:
-        la $a0, empty
-        li $a1, 16              # load 16 as max length to read into $a1
-        li $v0,8                # 8 is string system call
-        syscall
-
-        li $t4, 0               # initialize sum to 0
-
-        startConvert:
-        la $t1, empty
-        li $t9, 16            # initialize counter to 16
-
-        firstByte:
-        lb $a0, ($t1)      # load the first byte
-        blt $a0, 48, printBinToDec   
-        addi $t1, $t1, 1          # increment offset
-        subi $a0, $a0, 48         # subtract 48 to convert to int value
-        subi $t9, $t9, 1          # decrement counter
-        beq $a0, 0, isZero
-        beq $a0, 1, isOne
-        j convert     # 
-
-        isZero:
-        j firstByte
-
-        isOne:                   # do 2^counter 
-        li $t8, 1               # load 1
-        sllv $t5, $t8, $t9    # shift left by counter = 1 * 2^counter, store in $t5
-        add $t4, $t4, $t5         # add sum to previous sum 
-
-        move $a0, $t4        # load sum
-        j firstByte
-
-        convert:
-
-        printBinToDec:
-        srlv $t4, $t4, $t9
-        move $v1, $t4      # load sum
-        jr $ra
-
-binToHex:
-    # Print function string
-    la $a0,BinToHexStr
-    jal printmessage
-
-    # Convert to binary to decimal first
-    jal binToDecFunc
-
-    #  Print result message
-    la $a0,res
-    jal printmessage
-
-    # Use the mips print decimal as hex function
-    li $v0, 34
-    move $a0,$v1
-
-    b start
-
-
 
 exponent:
     # print operation name
