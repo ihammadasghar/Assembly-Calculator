@@ -1,7 +1,7 @@
 .data
 empty: .space 16
 res: .asciiz "result = "
-menu: .asciiz "\n Choose the number operation:\n 1 - ADD,  2 - SUB,  3 - MUL,  4 - DIV\n 5 - EXP,  6 - ROOT,  7 - COS,  8 - SIN\n 9 - Dec to Bin,  10 - Dec to Hex\n 11 - Bin to Dec,  12 - Bin to Hex\n 13 - Hex to Dec,  14 - Hex to Binary"
+menu: .asciiz "\n Choose the number operation:\n 1 - ADD,  2 - SUB,  3 - MUL,  4 - DIV\n 5 - EXP, 6 - LOG,  7 - ROOT,  8 - COS\n 9 - SIN, 10 - Dec to Bin,  11 - Dec to Hex 12 - Bin to Dec\n 13 - Bin to Hex, 14 - Hex to Dec,  15 - Hex to Bin"
 nextline: .asciiz "\n\nOperation number: "
 addstr: .asciiz "ADD(a,b):\n"
 substr: .asciiz "SUB(a,b):\n"
@@ -14,6 +14,7 @@ BinToHexStr: .asciiz "BinToHex(Binary):\n"
 HexToDecStr: .asciiz "BinToDec(Hex):\n"
 HexToBinStr: .asciiz "HexToBin(Hex):\n"
 expstr: .asciiz "EXP(base, power):\n"
+LogStr: .asciiz "LOG(base, power):\n"
 rootstr: .asciiz "ROOT(base, power):\n"
 cosstr: .asciiz "COS(X):\n"
 sinstr: .asciiz "SIN(X):\n"
@@ -45,13 +46,14 @@ start:
     beq $t0,3, multi
     beq $t0,4, divide
     beq $t0,5, exponent
-    beq $t0,6, root
-    beq $t0,7, cos
-    beq $t0,8, sin
-    beq $t0,9, decToBin
-    beq $t0,10, decToHex
-    beq $t0,11, binToDec
-    beq $t0,12, binToHex
+    beq $t0,6, log
+    beq $t0,7, root
+    beq $t0,8, cos
+    beq $t0,9, sin
+    beq $t0,10, decToBin
+    beq $t0,11 decToHex
+    beq $t0,12, binToDec
+    beq $t0,13, binToHex
 
 # Getting one input integer from the user
 oneIntInput:
@@ -170,54 +172,38 @@ decToHex:
 
     b start
 
+
 binToDec:
-    # Print function string
+    # print operation name
     la $a0,BinToDecStr
     jal printmessage
 
+    jal oneIntInput
+    move $t5, $a1
+    
     jal binToDecFunc
-    #  Print result message
     b print
+	
+	binToDecFunc:
+	li $t2,1 	# expo
+	li $t3,10	# for mod 10 
+	li $t9,0	# result
+	bindecloop:
+		div $t5,$t3     	#  digit = binary mod 10
+		mfhi $t7  		# temporary hold result of mod
+		div $t5,$t5,10		# binary = binary/10
+		
+		mul $t1,$t7,$t2		# digit * expo
+		add $t9,$t9,$t1		# result += digit*expo
+		mul $t2,$t2,2		# expo = expo*2
+		
+		bgt $t5,0,bindecloop		# binary > 0
+		
+	move $v1,$t9
+	jr $ra
+	
+	
 
-    binToDecFunc:
-        la $a0, empty
-        li $a1, 16              # load 16 as max length to read into $a1
-        li $v0,8                # 8 is string system call
-        syscall
-
-        li $t4, 0               # initialize sum to 0
-
-        startConvert:
-        la $t1, empty
-        li $t9, 16            # initialize counter to 16
-
-        firstByte:
-        lb $a0, ($t1)      # load the first byte
-        blt $a0, 48, printBinToDec   
-        addi $t1, $t1, 1          # increment offset
-        subi $a0, $a0, 48         # subtract 48 to convert to int value
-        subi $t9, $t9, 1          # decrement counter
-        beq $a0, 0, isZero
-        beq $a0, 1, isOne
-        j convert     # 
-
-        isZero:
-        j firstByte
-
-        isOne:                   # do 2^counter 
-        li $t8, 1               # load 1
-        sllv $t5, $t8, $t9    # shift left by counter = 1 * 2^counter, store in $t5
-        add $t4, $t4, $t5         # add sum to previous sum 
-
-        move $a0, $t4        # load sum
-        j firstByte
-
-        convert:
-
-        printBinToDec:
-        srlv $t4, $t4, $t9
-        move $v1, $t4      # load sum
-        jr $ra
 
 binToHex:
     # Print function string
@@ -262,6 +248,26 @@ exponent:
         move $v1,$t4 # move the result to print register
         jr $ra
 
+log:
+    # print operation name
+    la $a0,LogStr
+    jal printmessage
+
+    jal twoinputs
+    move $t5, $a1  # base 
+    move $t6, $a2  # power
+
+
+	li $t0,0 	# i =0
+	li $t8,1 	# res
+	li $t9,0 	# Ans
+	logloop:
+		mul $t8,$t8,$t5		# res*base
+		add $t0,$t0,1		# i++
+		add $t9,$t9,1		# ans++
+		blt $t8,$t6,logloop	# res != num
+	move $v1,$t9
+	b print
 
 root:
     # print operation name
