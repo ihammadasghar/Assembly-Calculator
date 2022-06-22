@@ -1,1 +1,5 @@
-binToDec(X): writes a binary X in decimal form
+-------------------------------------
+binToDec(X) --> returns bin X as dec
+Description:
+Writes a binary X in decimal form
+-------------------------------------

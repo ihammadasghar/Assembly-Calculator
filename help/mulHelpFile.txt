@@ -1,1 +1,5 @@
-multi(a,b): multiplies a and b
+---------------------------
+multi(a,b) --> returns a*b
+Description:
+Multiplies a and b
+---------------------------

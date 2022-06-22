@@ -1,1 +1,5 @@
-root(X,power): power root of X
+-------------------------------------------
+root(X,power) --> returns root(power) of X
+Description:
+Power root of X
+-------------------------------------------

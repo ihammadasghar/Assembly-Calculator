@@ -1,1 +1,5 @@
-cos(X): cosine of X
+---------------------------
+cos(X) --> returns cos(X)
+Description:
+Cosine of X
+---------------------------
