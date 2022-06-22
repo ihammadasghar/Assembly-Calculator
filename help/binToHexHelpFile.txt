@@ -1,10 +1,10 @@
 --------------------------------------
-binToHex(X) --> returns Hexadecimal base 16 
+BinToHex(X) --> returns Hexadecimal base 16 
 Description:
 Maximum amount of bits in input is 8.
 Converts binary base 2 input to hexadecimal base 16.
 
 
 Input types:
-X : Binary
+X : Binary 8 bits
 --------------------------------------

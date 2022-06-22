@@ -1,9 +1,9 @@
 -------------------------------------
-binToDec(X) --> Decimal base 10
+BinToDec(X) --> Decimal base 10
 Description:
 Maximum amount of bits in input is 8.
 Converts binary base 2 input as decimal base 10.
 
 Input types:
-X : Binary
+X : Binary 8 bits
 -------------------------------------

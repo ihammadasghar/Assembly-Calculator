@@ -1,8 +1,9 @@
 --------------------------------------
-hexToDec(X) --> returns Decimal base 10
+HexToDec(X) --> returns Decimal base 10
 Description:
+Hexadecimal input should be all small letters.
 Converts hexadecimal base 16 to decimal base 10.
 
 Input types:
-X : Hexadecimal (E.g 1AB00000)
+X : Hexadecimal 8 digits (32 bits) (E.g 1ab00000)
 --------------------------------------

@@ -1,5 +1,5 @@
 ---------------------------------------
-decToHex(X) --> retuns Hexadecimal base 16
+DecToHex(X) --> retuns Hexadecimal base 16
 Description:
 Converts decimal base 10 input to hexadecimal base 16.
 

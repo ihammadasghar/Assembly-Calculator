@@ -160,6 +160,8 @@ help:
     	beq $a1,11, helpForDecToHex
     	beq $a1,12, helpForBinToDec
     	beq $a1,13, helpForBinToHex
+        beq $a1,14, helpForHexToDec
+    	beq $a1,15, helpForHexToBin
     	
     	la $a0,helpErrorStr
     	li $v0,4
@@ -203,6 +205,9 @@ help:
 		b printfile
 	helpForBinToHex:
 		la $a0,BinToHexHelpFile
+		b printfile
+    helpForHexToDec:
+		la $a0,HexToDecHelpFile
 		b printfile
 	helpForHexToBin:
 		la $a0,HexToBinHelpFile
