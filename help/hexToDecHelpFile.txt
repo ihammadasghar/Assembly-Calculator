@@ -1,1 +1,5 @@
-hexToDec(X): writes a hexadecimal X in decimal form
+--------------------------------------
+hexToDec(X) --> returns hex X as dec
+Description:
+Writes a hexadecimal X in decimal 
+--------------------------------------

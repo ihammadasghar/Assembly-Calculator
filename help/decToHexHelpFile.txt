@@ -1,1 +1,5 @@
-decToHex(X): writes a decimal X in hexadecimal form
+---------------------------------------
+decToHex(X) --> retuns dec X as hex
+Description:
+Writes a decimal X in hexadecimal form
+---------------------------------------

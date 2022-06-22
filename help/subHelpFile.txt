@@ -1,1 +1,5 @@
-subt(a,b): subtracts a to b
+--------------------------
+subt(a,b) --> returns a-b
+Description:
+Subtracts a to b
+--------------------------

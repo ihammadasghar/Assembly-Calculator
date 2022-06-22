@@ -1,1 +1,5 @@
-hexToBin(X): writes a hexadecimal X in binary form
+--------------------------------------
+hexToBin(X) --> returns bin X as hex
+Description:
+Writes a hexadecimal X in binary form
+--------------------------------------
