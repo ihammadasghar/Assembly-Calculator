@@ -14,8 +14,10 @@ BinToHexStr: .asciiz "BinToHex(Binary):\n"
 HexToDecStr: .asciiz "BinToDec(Hex):\n"
 HexToBinStr: .asciiz "HexToBin(Hex):\n"
 expstr: .asciiz "EXP(base, power):\n"
-LogStr: .asciiz "LOG(base, power):\n"
-rootstr: .asciiz "ROOT(base, power):\n"
+LogStr: .asciiz "LOG(base, X):\n"
+LogErrorStr: .asciiz "Couldn't calculate log.\n"
+rootstr: .asciiz "ROOT(X, root power):\n"
+RootErrorStr: .asciiz "Couldn't calculate root."
 cosstr: .asciiz "COS(X):\n"
 sinstr: .asciiz "SIN(X):\n"
 
@@ -254,20 +256,33 @@ log:
     jal printmessage
 
     jal twoinputs
-    move $t5, $a1  # base 
-    move $t6, $a2  # power
+    move $t1, $a1  # base
+    move $t2, $a2  # x
 
+    beq $t2,1,logbasecase
+    
+    li $t3,0 # index
+    li $t4,1 # exponent
+    logloop:
+        mul $t4,$t4,$t1
+        add $t3,$t3,1  #increment
+        blt $t4,$t2,logloop
 
-	li $t0,0 	# i =0
-	li $t8,1 	# res
-	li $t9,0 	# Ans
-	logloop:
-		mul $t8,$t8,$t5		# res*base
-		add $t0,$t0,1		# i++
-		add $t9,$t9,1		# ans++
-		blt $t8,$t6,logloop	# res != num
-	move $v1,$t9
-	b print
+    beq $t4,$t2,logresult  #if x == exponent
+    
+    # print error message
+    la $a0,LogErrorStr
+    li $v0,4
+    b start
+	
+    logbasecase:
+    li $v1,0
+    jal print
+    
+    logresult:
+    move $v1, $t3
+    jal print
+
 
 root:
     # print operation name
@@ -278,30 +293,35 @@ root:
     jal rootfunc
 
     rootfunc:
-        # t1 - base
-        # t2 - root power
-        # t3 - index
-
-        move $t1,$a1
-        move $t2,$a2
+        move $t1,$a1  #x
+        move $t2,$a2  #root power
         #base case
-        li $t5,1
-        beq $t1,0,endrootloop # if the base is zero
+        beq $t2,0,rootbasecase # if the root power is zero
 
+        li $t5,0 #index
         rootloop:
+            add $t5,$t5,1 # increment index
             # get index to the power of "root power" in t6
             addi $a1,$t5,0
             addi $a2,$t2,0
             jal expfunc
             move $t6,$v1
-
-            bgt $t6,$t1,endrootloop # if index is greater than the base, index-1 was the approximation
-            add $t5,$t5,1 # increment index
-            b rootloop
+            blt $t6,$t1,rootloop
 
         endrootloop:
+            beq $t6,$t1,rootresult
+            
+            # print error message
+    	    la $a0,RootErrorStr
+            li $v0,4
+            b start
+	
+            rootbasecase:
+            li $v1,0
+            jal print
+            
+            rootresult:
             move $v1,$t5
-            sub $v1,$v1,1
             b print
 
 
