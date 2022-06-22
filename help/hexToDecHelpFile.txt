@@ -1,5 +1,8 @@
 --------------------------------------
-hexToDec(X) --> returns hex X as dec
+hexToDec(X) --> returns Decimal base 10
 Description:
-Writes a hexadecimal X in decimal 
+Converts hexadecimal base 16 to decimal base 10.
+
+Input types:
+X : Hexadecimal (E.g 1AB00000)
 --------------------------------------

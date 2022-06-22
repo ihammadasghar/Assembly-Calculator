@@ -1,5 +1,9 @@
 ---------------------------
-cos(X) --> returns cos(X)
+cos(X) --> returns float
 Description:
-Cosine of X
+The input X should be in radians.
+The function calculates the cosine of the give input
+
+Input types:
+X : float
 ---------------------------

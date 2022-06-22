@@ -1,5 +1,9 @@
 ---------------------------
 multi(a,b) --> returns a*b
 Description:
-Multiplies a and b
+Multiplies a and b.
+
+Input types:
+a : Integer
+b : Integer
 ---------------------------

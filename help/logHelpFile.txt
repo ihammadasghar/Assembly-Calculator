@@ -1,5 +1,9 @@
 --------------------------------------------
-log(base, power) --> returns log(base)power
+log(base, X) --> returns log(X) of base
 Description:
-Logaritm base of power
+The the log of x at the given base.
+
+Input types:
+base: Integer
+X: Integer
 --------------------------------------------

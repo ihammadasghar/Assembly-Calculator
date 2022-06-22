@@ -1,5 +1,8 @@
 --------------------------------------
-hexToBin(X) --> returns bin X as hex
+hexToBin(X) --> returns Binary base 2
 Description:
-Writes a hexadecimal X in binary form
+Converts hexadecimal base 16 to binary base 2.
+
+Input types:
+X : Hexadecimal (E.g 1AB00000)
 --------------------------------------

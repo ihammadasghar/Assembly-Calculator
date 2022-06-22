@@ -2,4 +2,8 @@
 Sum(a,b) --> returns a + b
 Description:
 Add two numbers a and b.
+
+Input types:
+a : Integer
+b : Integer
 ---------------------------

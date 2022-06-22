@@ -1,5 +1,8 @@
 ---------------------------------------
-decToHex(X) --> retuns dec X as hex
+decToHex(X) --> retuns Hexadecimal base 16
 Description:
-Writes a decimal X in hexadecimal form
+Converts decimal base 10 input to hexadecimal base 16.
+
+Input types:
+X : Integer
 ---------------------------------------

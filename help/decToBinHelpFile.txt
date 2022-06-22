@@ -1,5 +1,8 @@
 -------------------------------------
-decToBin(X) --> returns dec X as bin
+decToBin(X) --> returns Binary base 2
 Description:
-Writes a decimal X in binary form
+Converts a decimal base 10 input to binary base 2
+
+Input types:
+X : Integer
 -------------------------------------

@@ -1,5 +1,9 @@
 --------------------------------------------
 exponent(base,power) --> returns base^power
 Description:
-Multiplies base to the power
+Raises the given base to a the given power.
+
+Input types:
+Base: Integer
+Power: Integer
 --------------------------------------------

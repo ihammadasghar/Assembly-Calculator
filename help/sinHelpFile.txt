@@ -1,5 +1,8 @@
 --------------------------
-sin(X) --> returns sin(X)
+sin(X) --> returns float
 Description:
-Sine of X
+Calculates sine of X.
+
+Input types:
+X : float
 --------------------------

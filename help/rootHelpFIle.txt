@@ -1,5 +1,9 @@
 -------------------------------------------
-root(X,power) --> returns root(power) of X
+root(X, root power) --> returns root(power) of X
 Description:
-Power root of X
+root of the given power of x.
+
+Input types:
+X : Integer
+root power : Integer
 -------------------------------------------

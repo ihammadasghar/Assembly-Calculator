@@ -1,5 +1,9 @@
 --------------------------
 subt(a,b) --> returns a-b
 Description:
-Subtracts a to b
+Subtracts a from b.
+
+Input types:
+a : Integer
+b : Integer
 --------------------------
