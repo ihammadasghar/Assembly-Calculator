@@ -1,1 +1,5 @@
-log(base, power): logaritm base of power
+--------------------------------------------
+log(base, power) --> returns log(base)power
+Description:
+Logaritm base of power
+--------------------------------------------

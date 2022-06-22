@@ -1,1 +1,5 @@
-divide(a,b): divides a by b
+----------------------------
+divide(a,b) --> returns a/b
+Description:
+Divides a by b
+----------------------------

@@ -1,1 +1,5 @@
-exponent(base,power): multiplies base to the power
+--------------------------------------------
+exponent(base,power) --> returns base^power
+Description:
+Multiplies base to the power
+--------------------------------------------
