@@ -1,0 +1,1 @@
+root(X,power): power root of X

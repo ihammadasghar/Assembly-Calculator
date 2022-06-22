@@ -1,0 +1,1 @@
+multi(a,b): multiplies a and b

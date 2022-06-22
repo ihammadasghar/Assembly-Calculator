@@ -1,0 +1,1 @@
+exponent(base,power): multiplies base to the power

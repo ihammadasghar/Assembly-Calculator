@@ -1,0 +1,1 @@
+subt(a,b): subtracts a to b
