@@ -1,0 +1,1 @@
+binToDec(X): writes a binary X in decimal form

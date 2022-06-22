@@ -1,0 +1,1 @@
+hexToDec(X): writes a hexadecimal X in decimal form

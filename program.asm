@@ -3,6 +3,8 @@ empty: .space 16
 res: .asciiz "result = "
 menu: .asciiz "\n Choose the number operation:\n 1 - ADD,  2 - SUB,  3 - MUL,  4 - DIV\n 5 - EXP, 6 - LOG,  7 - ROOT,  8 - COS\n 9 - SIN, 10 - Dec to Bin,  11 - Dec to Hex 12 - Bin to Dec\n 13 - Bin to Hex, 14 - Hex to Dec,  15 - Hex to Bin"
 nextline: .asciiz "\n\nOperation number: "
+helpstr: .asciiz "help(operation number):\n"
+helpErrorStr: .asciiz "No such operation number."
 addstr: .asciiz "ADD(a,b):\n"
 substr: .asciiz "SUB(a,b):\n"
 mulstr: .asciiz "MUL(a,b):\n"
@@ -20,6 +22,24 @@ rootstr: .asciiz "ROOT(X, root power):\n"
 RootErrorStr: .asciiz "Couldn't calculate root."
 cosstr: .asciiz "COS(X):\n"
 sinstr: .asciiz "SIN(X):\n"
+
+sumHelpFile: .asciiz "C:/help/sumHelpFile.txt"
+subHelpFile: .asciiz "C:/help/subHelpFile.txt"
+mulHelpFile: .asciiz "C:/help/mulHelpFile.txt"
+divHelpFile: .asciiz "C:/help/divHelpFile.txt"
+expHelpFile: .asciiz "C:/help/expHelpFile.txt"
+cosHelpFile: .asciiz "C:/help/cosHelpFile.txt"
+sinHelpFile: .asciiz "C:/help/sinHelpFile.txt"
+logHelpFile: .asciiz "C:/help/logHelpFile.txt"
+rootHelpFile: .asciiz "C:/help/rootHelpFile.txt"
+DecToBinHelpFile: .asciiz "C:/help/DecToBinHelpFile.txt"
+DecToHexHelpFile: .asciiz "C:/help/DecToHexHelpFile.txt"
+BinToDecHelpFile: .asciiz "C:/help/BinToDecHelpFile.txt"
+BinToHexHelpFile: .asciiz "C:/help/BinToHexHelpFile.txt"
+HexToBinHelpFile: .asciiz "C:/help/HexToBinHelpFile.txt"
+HexToDecHelpFile: .asciiz "C:/help/HexToDecHelpFile.txt"
+
+fileWords: .space 1024
 
 
 # Imprimir texto
@@ -43,6 +63,7 @@ start:
 
 
     # Calling operation
+    beq $t0,0, help
     beq $t0,1, sum
     beq $t0,2, subt
     beq $t0,3, multi
@@ -85,7 +106,102 @@ twoinputs:
     syscall 
     move $a2,$v0
     jr $ra
+    
+help:
+    	la $a0,helpstr
+    	jal printmessage
 
+	jal oneIntInput
+
+    	beq $a1,1, helpForSum
+    	beq $a1,2, helpForSub
+    	beq $a1,3, helpForMul
+    	beq $a1,4, helpForDiv
+    	beq $a1,5, helpForExp
+    	beq $a1,6, helpForLog
+    	beq $a1,7, helpForRoot
+    	beq $a1,8, helpForCos
+    	beq $a1,9, helpForSin
+    	beq $a1,10, helpForDecToBin
+    	beq $a1,11, helpForDecToHex
+    	beq $a1,12, helpForBinToDec
+    	beq $a1,13, helpForBinToHex
+    	
+    	la $a0,helpErrorStr
+    	li $v0,4
+    	b start
+	
+	helpForSum:
+		la $a0,sumHelpFile
+		b printfile
+	helpForSub:
+		la $a0,subHelpFile
+		b printfile
+	helpForMul:
+		la $a0,mulHelpFile
+		b printfile
+	helpForDiv:
+		la $a0,divHelpFile
+		b printfile
+	helpForExp:
+		la $a0,expHelpFile
+		b printfile
+	helpForLog:
+		la $a0,logHelpFile
+		b printfile
+	helpForRoot:
+		la $a0,rootHelpFile
+		b printfile
+	helpForCos:
+		la $a0,cosHelpFile
+		b printfile
+	helpForSin:
+		la $a0,sinHelpFile
+		b printfile
+	helpForDecToBin:
+		la $a0,DecToBinHelpFile
+		b printfile
+	helpForDecToHex:
+		la $a0,DecToHexHelpFile
+		b printfile
+	helpForBinToDec:
+		la $a0,BinToDecHelpFile
+		b printfile
+	helpForBinToHex:
+		la $a0,BinToHexHelpFile
+		b printfile
+	helpForHexToBin:
+		la $a0,HexToBinHelpFile
+		b printfile
+ 
+
+
+
+printfile:
+	li $v0,13           	# open_file syscall code = 13    	
+	li $a1,0           	# file flag = read (0)
+    	
+    	
+    	syscall
+    	move $s0,$v0        	# save the file descriptor. $s0 = file
+	
+	#read the file
+	li $v0, 14		# read_file syscall code = 14
+	move $a0,$s0		# file descriptor
+	la $a1,fileWords  	# The buffer that holds the string of the WHOLE file
+	la $a2,1024		# hardcoded buffer length
+	syscall
+	
+	# print whats in the file
+	li $v0, 4		# read_string syscall code = 4
+	la $a0,fileWords
+	syscall
+	
+	#Close the file
+    	li $v0, 16         		# close_file syscall code
+    	move $a0,$s0      		# file descriptor to close
+	b start
+	
 # Operations
 sum:
     # print operation name
@@ -284,6 +400,7 @@ log:
     jal print
 
 
+  
 root:
     # print operation name
     la $a0,rootstr

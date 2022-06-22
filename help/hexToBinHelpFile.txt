@@ -1,0 +1,1 @@
+hexToBin(X): writes a hexadecimal X in binary form
