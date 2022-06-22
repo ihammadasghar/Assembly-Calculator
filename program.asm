@@ -1,27 +1,38 @@
+####################################################################
+# PROJETO DE ARQUITETURA DE COMPUTADORES 2021/2022 - UAL
+# TEMA: Calculadora Científica 
+# GRUPO:
+# 30008767 - Syed Hammad Ur Rehman Asghar
+# write your num Duarte
+####################################################################
+
 .data
 empty: .space 16
-res: .asciiz "result = "
-menu: .asciiz "\n Choose the number operation:\n 1 - ADD,  2 - SUB,  3 - MUL,  4 - DIV\n 5 - EXP, 6 - LOG,  7 - ROOT,  8 - COS\n 9 - SIN, 10 - Dec to Bin,  11 - Dec to Hex 12 - Bin to Dec\n 13 - Bin to Hex, 14 - Hex to Dec,  15 - Hex to Bin"
-nextline: .asciiz "\n\nOperation number: "
-helpstr: .asciiz "help(operation number):\n"
+res: .asciiz " Ans = "
+menu: .asciiz "\n ------- Welcome! ------- \n Operations table:\n 0 - Help,  16 - Exit\n 1 - ADD,  2 - SUB,  3 - MUL\n 4 - DIV,  5 - EXP,  6 - LOG\n 7 - ROOT,  8 - COS,  9 - SIN\n 10 - DecToBin,  11 - DecToHex\n 12 - BinToDec,  13 - BinToHex\n 14 - HexToDec,  15 - HexToBin"
+nextline: .asciiz "\n\nChoose Operation: "
+input1Str: .asciiz "Arg 1: "
+input2Str: .asciiz "Arg 2: "
+
+helpstr: .asciiz "Help(operation number): "
 helpErrorStr: .asciiz "No such operation number."
-addstr: .asciiz "ADD(a,b):\n"
-substr: .asciiz "SUB(a,b):\n"
-mulstr: .asciiz "MUL(a,b):\n"
-divstr: .asciiz "DIV(a,b):\n"
-DecToBinStr: .asciiz "DecToBin(Decimal):\n"
-DecToHexStr: .asciiz "DecToHex(Decimal):\n"
-BinToDecStr: .asciiz "BinToDec(Binary):\n"
-BinToHexStr: .asciiz "BinToHex(Binary):\n"
-HexToDecStr: .asciiz "BinToDec(Hex):\n"
-HexToBinStr: .asciiz "HexToBin(Hex):\n"
-expstr: .asciiz "EXP(base, power):\n"
-LogStr: .asciiz "LOG(base, X):\n"
-LogErrorStr: .asciiz "Couldn't calculate log.\n"
-rootstr: .asciiz "ROOT(X, root power):\n"
+addstr: .asciiz "-> ADD(a,b):\n"
+substr: .asciiz "-> SUB(a,b):\n"
+mulstr: .asciiz "-> MUL(a,b):\n"
+divstr: .asciiz "-> DIV(a,b):\n"
+DecToBinStr: .asciiz "-> DecToBin(Decimal): "
+DecToHexStr: .asciiz "-> DecToHex(Decimal): "
+BinToDecStr: .asciiz "-> BinToDec(Binary): "
+BinToHexStr: .asciiz "-> BinToHex(Binary): "
+HexToDecStr: .asciiz "-> HexToDec(Hex): "
+HexToBinStr: .asciiz "-> HexToBin(Hex): "
+expstr: .asciiz "-> EXP(base, power): "
+LogStr: .asciiz "-> LOG(base, X): "
+LogErrorStr: .asciiz "Couldn't calculate log. "
+rootstr: .asciiz "-> ROOT(X, root power): "
 RootErrorStr: .asciiz "Couldn't calculate root."
-cosstr: .asciiz "COS(X):\n"
-sinstr: .asciiz "SIN(X):\n"
+cosstr: .asciiz "-> COS(X): "
+sinstr: .asciiz "-> SIN(X): "
 
 sumHelpFile: .asciiz "C:/help/sumHelpFile.txt"
 subHelpFile: .asciiz "C:/help/subHelpFile.txt"
@@ -38,6 +49,10 @@ BinToDecHelpFile: .asciiz "C:/help/BinToDecHelpFile.txt"
 BinToHexHelpFile: .asciiz "C:/help/BinToHexHelpFile.txt"
 HexToBinHelpFile: .asciiz "C:/help/HexToBinHelpFile.txt"
 HexToDecHelpFile: .asciiz "C:/help/HexToDecHelpFile.txt"
+
+hexa: .space 1024
+HexToDecErrorStr: .asciiz "You have entered in an incorrect form, make sure everything is inbetween 0 to 9 and a to f (small letters).\n"
+new_line: .asciiz "\n"
 
 fileWords: .space 1024
 
@@ -77,6 +92,17 @@ start:
     beq $t0,11 decToHex
     beq $t0,12, binToDec
     beq $t0,13, binToHex
+    beq $t0,14, hexToDec
+    beq $t0,15, hexToBin
+    beq $t0,16, exit
+
+
+# Getting one input string from the user
+strInput:
+    li $v0,8
+    syscall 
+    jr $ra
+
 
 # Getting one input integer from the user
 oneIntInput:
@@ -96,11 +122,19 @@ oneFloatInput:
 
 # Getting two inputs from the user
 twoinputs:
+    la $a0, input1Str
+    li $v0,4
+    syscall
+    
     # save num A
     li $v0,5
     syscall 
     move $a1,$v0
 
+    la $a0, input2Str
+    li $v0,4
+    syscall
+    
     # save num B
     li $v0,5
     syscall 
@@ -339,6 +373,141 @@ binToHex:
     li $v0, 34
     move $a0,$v1
 
+    b start
+
+hexToDec:
+    # Print function string
+    la $a0,HexToDecStr
+    jal printmessage
+
+	la $a0, hexa
+	li $a1, 1024
+	li $v0, 8
+	syscall
+
+    jal hexToDecFunc
+
+    #  Print result message
+    la $a0,res
+    jal printmessage
+
+    move $a0, $v1
+    li 	$v0, 1
+    b start
+
+    hexToDecFunc:
+        la $t8, hexa
+        la $t0, hexa
+        lb $t1, ($t0)
+        li $t6, 1
+        li $t7, 0
+        b find_end
+        find_end:
+            beq $t1, 10, end_found
+            addu $t0, $t0, 1
+            lb $t1, ($t0)
+            b find_end
+        end_found:		
+            subu $t0, $t0, 1
+            lb $t1, ($t0)
+            sge $t2, $t1, '0'
+            sle $t3, $t1, '9'
+            sge $t4, $t1, 'a'
+            sle $t5, $t1, 'f'
+            beq $t2, 1, zero_to_nine_check
+            b hexToDecError
+        loop:
+            beq 	$t0, $t8, exitHexToDec	
+            subu 	$t0, $t0, 1
+            lb 		$t1, ($t0)
+            mul 	$t6, $t6, 16
+            sge 	$t2, $t1, '0'
+            sle 	$t3, $t1, '9'
+            sge 	$t4, $t1, 'a'
+            sle 	$t5, $t1, 'f'
+            beq 	$t2, 1, zero_to_nine_check
+            b 		hexToDecError	
+        zero_to_nine_check:
+            beq 	$t3, 1, is_between_zero_to_nine	
+            beq 	$t5, 1, a_to_f_check
+            b 		hexToDecError	
+        is_between_zero_to_nine:
+            sub 	$t1, $t1, '0'
+            mul 	$t1, $t1, $t6
+            add 	$t7, $t7, $t1
+            b 		loop
+        a_to_f_check:
+            beq 	$t4, 1, is_a_to_f
+            b 		hexToDecError
+        is_a_to_f:
+            beq 	$t1, 'a', is_a
+            beq 	$t1, 'b', is_b
+            beq 	$t1, 'c', is_c
+            beq 	$t1, 'd', is_d
+            beq 	$t1, 'e', is_e
+            beq 	$t1, 'f', is_f
+            b 		hexToDecError
+        is_a:
+            li 		$t1, 10
+            mul 	$t1, $t1, $t6
+            add 	$t7, $t7, $t1
+            b 		loop
+        is_b:
+            li 		$t1, 11
+            mul 	$t1, $t1, $t6
+            add 	$t7, $t7, $t1
+            b 		loop
+        is_c:
+            li 		$t1, 12
+            mul 	$t1, $t1, $t6
+            add 	$t7, $t7, $t1
+            b 		loop
+        is_d:
+            li 		$t1, 13
+            mul 	$t1, $t1, $t6
+            add 	$t7, $t7, $t1
+            b 		loop
+        is_e:
+            li 		$t1, 14
+            mul 	$t1, $t1, $t6
+            add 	$t7, $t7, $t1
+            b 		loop
+        is_f:
+            li 		$t1, 15
+            mul 	$t1, $t1, $t6
+            add 	$t7, $t7, $t1
+            b 		loop					
+        hexToDecError:
+            la 		$a0, HexToDecErrorStr
+            li 		$v0, 4
+            b start
+
+        exitHexToDec:
+            move $v1,$t7
+            jr $ra
+
+
+hexToBin:
+    # Print function string
+    la $a0,HexToBinStr
+    jal printmessage
+
+    la $a0, hexa
+	li $a1, 1024
+	li $v0, 8
+	syscall
+
+    # Convert to Decimal first
+    jal hexToDecFunc
+
+    #  Print result message
+    la $a0,res
+    jal printmessage
+
+    # Use the mips print decimal as binary function
+    move $a0,$v1
+    li $v0, 35
+    
     b start
 
 
@@ -586,3 +755,7 @@ print:
     addi $a0,$v1,0
     li $v0,1
     b start
+
+exit:
+    li $v0, 10
+    syscall
