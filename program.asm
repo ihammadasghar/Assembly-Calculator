@@ -3,7 +3,7 @@
 # TEMA: Calculadora Científica 
 # GRUPO:
 # 30008767 - Syed Hammad Ur Rehman Asghar
-# write your num Duarte
+# 30009658 - Duarte Miguel dos Santos Rodrigues
 ####################################################################
 
 .data
