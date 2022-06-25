@@ -4,6 +4,8 @@
 # GRUPO:
 # 30008767 - Syed Hammad Ur Rehman Asghar
 # 30009658 - Duarte Miguel dos Santos Rodrigues
+# Ahmet add your name here
+# Jorge add your name here
 #
 # NOTE: The "Help" folder should be in path "c:\" for the help function to work. 
 #######################################################################################################################
