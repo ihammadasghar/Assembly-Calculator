@@ -13,7 +13,7 @@
 .data
 empty: .space 16
 menu: .asciiz "\n ------- Welcome! ------- \n Operations table:\n 0 - Help,  16 - Exit\n 1 - ADD,  2 - SUB,  3 - MUL\n 4 - DIV,  5 - POW,  6 - LOG\n 7 - ROOT,  8 - COS,  9 - SIN\n 10 - DecToBin,  11 - DecToHex\n 12 - BinToDec,  13 - BinToHex\n 14 - HexToDec,  15 - HexToBin"
-
+oneFloatConstant: .float 1.000000
 
 #  Operation prompts and errors
 nextline: .asciiz "\n\nChoose Operation: "
@@ -647,60 +647,36 @@ cos:
     li $v0,6
     syscall 
 
-    # t1 - x
-    # t6 - approximation level
-    li $t6,10
-    
-    # HAVE TO CONVERT INT 1 TO FLOAT BECAUSE LI.S DOESNT WORK WITH MARS
-    li $t4, 1
-    mtc1 $t4, $f2
-    cvt.s.w $f2, $f2 # final result variable
+    # f0 - x
+    l.s $f1,oneFloatConstant # x1
+    mov.s $f12,$f1 # cosx
 
-    li $t3,2 # loop index
-    li $t0,1 # 1 - subtract series, 0 - add series
+    li $t1,1 #index
     cosloop:
         # HAVE TO CONVERT INT 1 TO FLOAT BECAUSE LI.S DOESNT WORK WITH MARS
-        li $t4, 1
-        mtc1 $t4, $f1
-        cvt.s.w $f1, $f1
-        
-        li $t4, 0 # inner index
-        cosloop2: # Multiply index by itself "root power" times
-            mul.s $f1,$f1,$f0
-            add $t4,$t4,1 # increment inner loop index
-            blt $t4,$t3,cosloop2
+        mtc1 $t1, $f4
+        cvt.s.w $f4, $f4 # final result variable
+            
+        l.s $f2,oneFloatConstant # 1
+        add.s $f5,$f2,$f2 # 2
+        mul.s $f3,$f5,$f4 # (2 x i)
+        sub.s $f3,$f3,$f2 # (2 x i) - 1
+        mul.s $f3,$f3,$f4 # i * ((2 x i) - 1)
+        mul.s $f3,$f3,$f5 # 2 * i * ((2 x i) - 1) denominator
 
+        mul.s $f1,$f1,$f0 # x1*n
+        mul.s $f1,$f1,$f0 # x1*n*n
+        div.s $f1,$f1,$f3 # x1*n*n/denominator
+        neg.s $f1,$f1 # -x1*n*n/denominator
 
-        move $t4,$t3 # inner loop index
-        li $t7,1 # result variable for factorial
-        cosloop3: # get factorial of index
-            mul $t7,$t7,$t4
-            sub $t4,$t4,1 # decrement the inner index
-            bgt $t4,1,cosloop3
+        add.s $f12,$f12,$f1 # cosx = cosx + 1
 
-        # Convert t7(factorial result) to float
-        mtc1 $t7, $f8
-        cvt.s.w $f8, $f8
+        addi $t1,$t1,1 # increment
 
-        div.s $f4,$f1,$f8 # divide exponenet result by factorial result
-
-        # if t8 is 1 subtract from result
-        beq $t0,1,subtractFromRes
-        # else
-            add.s $f2,$f2,$f4
-            li $t0,1
-            b continue
-
-        subtractFromRes:
-            sub.s $f2,$f2,$f4 # subtract from the cos final result
-            li $t0,0 
-
-        continue:
-        add $t3,$t3,2 # increment the index
-        blt $t3,$t6,cosloop # check if the loop should end
-    mov.s $f12,$f2
+        blt $t1,10,cosloop
 
     b printfloat
+
 
 sin:
     # print operation name
@@ -712,56 +688,33 @@ sin:
     syscall 
 
     # f0 - x
-    # t6 - approximation level
-    li $t6,10
-    
-    # HAVE TO CONVERT INT 1 TO FLOAT BECAUSE LI.S DOESNT WORK WITH MARS
-    mov.s $f2,$f0 # final result variable
 
-    li $t3,3 # loop index
-    li $t0,1 # 1 - subtract series, 0 - add series
+    mov.s $f1,$f0 # x1
+    mov.s $f12,$f0 # sinx
+
+    li $t1,1 #index
     sinloop:
         # HAVE TO CONVERT INT 1 TO FLOAT BECAUSE LI.S DOESNT WORK WITH MARS
-        li $t4, 1
-        mtc1 $t4, $f1
-        cvt.s.w $f1, $f1
-        
-        li $t4, 0 # inner index
-        sinloop2: # Multiply index by itself "root power" times
-            mul.s $f1,$f1,$f0
-            add $t4,$t4,1 # increment inner loop index
-            blt $t4,$t3,sinloop2
-
-
-        move $t4,$t3 # inner loop index
-        li $t7,1 # result variable for factorial
-        sinloop3: # get factorial of index
-            mul $t7,$t7,$t4
-            sub $t4,$t4,1 # decrement the inner index
-            bgt $t4,1,sinloop3
-
-        # Convert t7(factorial result) to float
-        mtc1 $t7, $f8
-        cvt.s.w $f8, $f8
-
-        div.s $f4,$f1,$f8 # divide exponenet result by factorial result
-
-        # if t8 is 1 subtract from result
-        beq $t0,1,subtractFromRes2
-        # else
-            add.s $f2,$f2,$f4
-            li $t0,1
-            b continue2
-
-        subtractFromRes2:
-            sub.s $f2,$f2,$f4 # subtract from the cos final result
-            li $t0,0 
+        mtc1 $t1, $f4
+        cvt.s.w $f4, $f4 # final result variable
             
+        l.s $f2,oneFloatConstant # 1
+        add.s $f5,$f2,$f2 # 2
+        mul.s $f3,$f5,$f4 # (2 x i)
+        add.s $f3,$f3,$f2 # (2 x i) + 1
+        mul.s $f3,$f3,$f4 # i * ((2 x i) + 1)
+        mul.s $f3,$f3,$f5 # 2 * i * ((2 x i) + 1) denominator
 
-        continue2:
-        add $t3,$t3,2 # increment the index
-        blt $t3,$t6,sinloop # check if the loop should end
-    mov.s $f12,$f2
+        mul.s $f1,$f1,$f0 # x1*n
+        mul.s $f1,$f1,$f0 # x1*n*n
+        div.s $f1,$f1,$f3 # x1*n*n/denominator
+        neg.s $f1,$f1 # -x1*n*n/denominator
+
+        add.s $f12,$f12,$f1 # sinx = sinx + 1
+
+        addi $t1,$t1,1 # increment
+
+        blt $t1,10,sinloop
     
     b printfloat
 
