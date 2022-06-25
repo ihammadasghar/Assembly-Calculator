@@ -1,39 +1,46 @@
-####################################################################
+#######################################################################################################################
 # PROJETO DE ARQUITETURA DE COMPUTADORES 2021/2022 - UAL
 # TEMA: Calculadora Científica 
 # GRUPO:
 # 30008767 - Syed Hammad Ur Rehman Asghar
 # 30009658 - Duarte Miguel dos Santos Rodrigues
-####################################################################
+#
+# NOTE: The "Help" folder should be in path "c:\" for the help function to work. 
+#######################################################################################################################
 
 .data
 empty: .space 16
-res: .asciiz " Ans = "
-menu: .asciiz "\n ------- Welcome! ------- \n Operations table:\n 0 - Help,  16 - Exit\n 1 - ADD,  2 - SUB,  3 - MUL\n 4 - DIV,  5 - EXP,  6 - LOG\n 7 - ROOT,  8 - COS,  9 - SIN\n 10 - DecToBin,  11 - DecToHex\n 12 - BinToDec,  13 - BinToHex\n 14 - HexToDec,  15 - HexToBin"
-nextline: .asciiz "\n\nChoose Operation: "
-input1Str: .asciiz "Arg 1: "
-input2Str: .asciiz "Arg 2: "
+menu: .asciiz "\n ------- Welcome! ------- \n Operations table:\n 0 - Help,  16 - Exit\n 1 - ADD,  2 - SUB,  3 - MUL\n 4 - DIV,  5 - POW,  6 - LOG\n 7 - ROOT,  8 - COS,  9 - SIN\n 10 - DecToBin,  11 - DecToHex\n 12 - BinToDec,  13 - BinToHex\n 14 - HexToDec,  15 - HexToBin"
 
-helpstr: .asciiz "Help(operation number): "
-helpErrorStr: .asciiz "No such operation number."
-addstr: .asciiz "-> ADD(a,b):\n"
-substr: .asciiz "-> SUB(a,b):\n"
-mulstr: .asciiz "-> MUL(a,b):\n"
-divstr: .asciiz "-> DIV(a,b):\n"
+
+#  Operation prompts and errors
+nextline: .asciiz "\n\nChoose Operation: "
+input1Str: .asciiz "\nArg 1: "
+input2Str: .asciiz "Arg 2: "
+res: .asciiz " Ans = "
+new_line: .asciiz "\n"
+helpstr: .asciiz "-> Help(operation number): "
+helpErrorStr: .asciiz "Error: No such operation number."
+addstr: .asciiz "-> ADD(a,b): "
+substr: .asciiz "-> SUB(a,b): "
+mulstr: .asciiz "-> MUL(a,b): "
+divstr: .asciiz "-> DIV(a,b): "
 DecToBinStr: .asciiz "-> DecToBin(Decimal): "
 DecToHexStr: .asciiz "-> DecToHex(Decimal): "
 BinToDecStr: .asciiz "-> BinToDec(Binary): "
 BinToHexStr: .asciiz "-> BinToHex(Binary): "
 HexToDecStr: .asciiz "-> HexToDec(Hex): "
 HexToBinStr: .asciiz "-> HexToBin(Hex): "
-expstr: .asciiz "-> EXP(base, power): "
+HexToDecErrorStr: .asciiz "Error: You have entered in an incorrect form, make sure everything is inbetween 0 to 9 and a to f (small letters).\n"
+expstr: .asciiz "-> Power(base, power): "
 LogStr: .asciiz "-> LOG(base, X): "
-LogErrorStr: .asciiz "Couldn't calculate log. "
+LogErrorStr: .asciiz "Error: Couldn't calculate log. "
 rootstr: .asciiz "-> ROOT(X, root power): "
-RootErrorStr: .asciiz "Couldn't calculate root."
+RootErrorStr: .asciiz "Error: Couldn't calculate root."
 cosstr: .asciiz "-> COS(X): "
 sinstr: .asciiz "-> SIN(X): "
 
+#  Help file addresses
 sumHelpFile: .asciiz "C:/help/sumHelpFile.txt"
 subHelpFile: .asciiz "C:/help/subHelpFile.txt"
 mulHelpFile: .asciiz "C:/help/mulHelpFile.txt"
@@ -51,13 +58,9 @@ HexToBinHelpFile: .asciiz "C:/help/HexToBinHelpFile.txt"
 HexToDecHelpFile: .asciiz "C:/help/HexToDecHelpFile.txt"
 
 hexa: .space 1024
-HexToDecErrorStr: .asciiz "You have entered in an incorrect form, make sure everything is inbetween 0 to 9 and a to f (small letters).\n"
-new_line: .asciiz "\n"
-
 fileWords: .space 1024
 
 
-# Imprimir texto
 .text
     #  Print message
     li $v0,4
@@ -142,87 +145,98 @@ twoinputs:
     jr $ra
     
 help:
-    	la $a0,helpstr
-    	jal printmessage
+    la $a0,helpstr
+    jal printmessage
 
 	jal oneIntInput
 
-    	beq $a1,1, helpForSum
-    	beq $a1,2, helpForSub
-    	beq $a1,3, helpForMul
-    	beq $a1,4, helpForDiv
-    	beq $a1,5, helpForExp
-    	beq $a1,6, helpForLog
-    	beq $a1,7, helpForRoot
-    	beq $a1,8, helpForCos
-    	beq $a1,9, helpForSin
-    	beq $a1,10, helpForDecToBin
-    	beq $a1,11, helpForDecToHex
-    	beq $a1,12, helpForBinToDec
-    	beq $a1,13, helpForBinToHex
-        beq $a1,14, helpForHexToDec
-    	beq $a1,15, helpForHexToBin
-    	
-    	la $a0,helpErrorStr
-    	li $v0,4
-    	b start
+    beq $a1,1, helpForSum
+    beq $a1,2, helpForSub
+    beq $a1,3, helpForMul
+    beq $a1,4, helpForDiv
+    beq $a1,5, helpForExp
+    beq $a1,6, helpForLog
+    beq $a1,7, helpForRoot
+    beq $a1,8, helpForCos
+    beq $a1,9, helpForSin
+    beq $a1,10, helpForDecToBin
+    beq $a1,11, helpForDecToHex
+    beq $a1,12, helpForBinToDec
+    beq $a1,13, helpForBinToHex
+    beq $a1,14, helpForHexToDec
+    beq $a1,15, helpForHexToBin
+    
+    la $a0,helpErrorStr
+    li $v0,4
+    b start
 	
 	helpForSum:
 		la $a0,sumHelpFile
 		b printfile
+
 	helpForSub:
 		la $a0,subHelpFile
 		b printfile
+
 	helpForMul:
 		la $a0,mulHelpFile
 		b printfile
+
 	helpForDiv:
 		la $a0,divHelpFile
 		b printfile
+
 	helpForExp:
 		la $a0,expHelpFile
 		b printfile
+
 	helpForLog:
 		la $a0,logHelpFile
 		b printfile
+
 	helpForRoot:
 		la $a0,rootHelpFile
 		b printfile
+
 	helpForCos:
 		la $a0,cosHelpFile
 		b printfile
+
 	helpForSin:
 		la $a0,sinHelpFile
 		b printfile
+
 	helpForDecToBin:
 		la $a0,DecToBinHelpFile
 		b printfile
+
 	helpForDecToHex:
 		la $a0,DecToHexHelpFile
 		b printfile
+
 	helpForBinToDec:
 		la $a0,BinToDecHelpFile
 		b printfile
+
 	helpForBinToHex:
 		la $a0,BinToHexHelpFile
 		b printfile
+
     helpForHexToDec:
 		la $a0,HexToDecHelpFile
 		b printfile
+
 	helpForHexToBin:
 		la $a0,HexToBinHelpFile
 		b printfile
  
 
-
-
 printfile:
-	li $v0,13           	# open_file syscall code = 13    	
-	li $a1,0           	# file flag = read (0)
+	li $v0,13  # open_file syscall code = 13    	
+	li $a1,0  # file flag = read (0)
     	
-    	
-    	syscall
-    	move $s0,$v0        	# save the file descriptor. $s0 = file
+    syscall
+    move $s0,$v0  # save the file descriptor. $s0 = file
 	
 	#read the file
 	li $v0, 14		# read_file syscall code = 14
@@ -237,8 +251,8 @@ printfile:
 	syscall
 	
 	#Close the file
-    	li $v0, 16         		# close_file syscall code
-    	move $a0,$s0      		# file descriptor to close
+    li $v0, 16         		# close_file syscall code
+    move $a0,$s0      		# file descriptor to close
 	b start
 	
 # Operations
@@ -269,6 +283,7 @@ subt:
         sub $v1,$a1,$a2
         jr $ra
 
+
 divide:
     # print operation name
     la $a0,divstr
@@ -282,6 +297,7 @@ divide:
         div $v1,$a1,$a2
         jr $ra
 
+
 multi:
     # print operation name
     la $a0,mulstr
@@ -294,6 +310,7 @@ multi:
     multfunc:
         mul $v1,$a1,$a2
         jr $ra
+
 
 decToBin:
     # print operation name
@@ -334,7 +351,8 @@ binToDec:
     # print operation name
     la $a0,BinToDecStr
     jal printmessage
-
+    
+    # Ask for input
     jal oneIntInput
     move $t5, $a1
     
@@ -357,16 +375,19 @@ binToDec:
 		bgt $t5,0,bindecloop		# binary > 0
 		
 	move $v1,$t9
-	jr $ra
-	
-	
+	jr $ra	
 
 
 binToHex:
     # Print function string
     la $a0,BinToHexStr
     jal printmessage
-
+    
+    
+    # Ask for input
+    jal oneIntInput
+    move $t5, $a1
+    
     # Convert to binary to decimal first
     jal binToDecFunc
 
@@ -379,6 +400,7 @@ binToHex:
     move $a0,$v1
 
     b start
+
 
 hexToDec:
     # Print function string
@@ -516,7 +538,6 @@ hexToBin:
     b start
 
 
-
 exponent:
     # print operation name
     la $a0,expstr
@@ -572,7 +593,6 @@ log:
     logresult:
     move $v1, $t3
     jal print
-
 
   
 root:
@@ -743,23 +763,27 @@ sin:
     
     b printfloat
 
+
 printmessage:
     li $v0,4
     syscall
     jr $ra
-    
+
+
 printfloat:
     la $a0,res
     jal printmessage
     li $v0,2
     b start
-    
+
+
 print: 
     la $a0,res
     jal printmessage
     addi $a0,$v1,0
     li $v0,1
     b start
+
 
 exit:
     li $v0, 10

@@ -1,8 +1,10 @@
---------------------------
+
+_________________________________________________
+
 sin(X) --> returns float
 Description:
-Calculates sine of X.
+	Calculates sine of X.
 
 Input types:
-X : float
---------------------------
+	X : float
+_________________________________________________

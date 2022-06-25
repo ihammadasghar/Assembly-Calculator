@@ -1,9 +1,11 @@
---------------------------
-subt(a,b) --> returns a-b
+
+_________________________________________________
+
+subtract(a,b) --> returns a-b
 Description:
-Subtracts a from b.
+	Subtracts a from b.
 
 Input types:
-a : Integer
-b : Integer
---------------------------
+	a : Integer
+	b : Integer
+_________________________________________________

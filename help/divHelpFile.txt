@@ -1,11 +1,13 @@
-----------------------------
+
+_________________________________________________
+
 divide(a,b) --> returns a/b
 Description:
-Performs divide of the given two inputs.
-a - Divident
-b - Divisor
+	Performs divide of the given two inputs.
+	a - Divident
+	b - Divisor
 
 Input types:
-a : Integer
-b : Integer
-----------------------------
+	a : Integer
+	b : Integer
+_________________________________________________

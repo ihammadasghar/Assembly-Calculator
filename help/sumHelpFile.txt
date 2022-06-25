@@ -1,9 +1,11 @@
----------------------------
-Sum(a,b) --> returns a + b
+
+_________________________________________________
+
+sum(a,b) --> returns a + b
 Description:
-Add two numbers a and b.
+	Add two numbers a and b.
 
 Input types:
-a : Integer
-b : Integer
----------------------------
+	a : Integer
+	b : Integer
+_________________________________________________

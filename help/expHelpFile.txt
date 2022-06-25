@@ -1,9 +1,11 @@
---------------------------------------------
-exponent(base,power) --> returns base^power
+
+_________________________________________________
+
+power(base,power) --> returns base^power
 Description:
-Raises the given base to a the given power.
+	Raises the given base to a the given power.
 
 Input types:
-Base: Integer
-Power: Integer
---------------------------------------------
+	Base: Integer
+	Power: Integer
+_________________________________________________

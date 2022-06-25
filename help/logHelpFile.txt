@@ -1,9 +1,11 @@
---------------------------------------------
+
+_________________________________________________
+
 log(base, X) --> returns log(X) of base
 Description:
-The the log of x at the given base.
+	The the log of x at the given base.
 
 Input types:
-base: Integer
-X: Integer
---------------------------------------------
+	base: Integer
+	X: Integer
+_________________________________________________

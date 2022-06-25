@@ -1,9 +1,14 @@
---------------------------------------
+
+_________________________________________________
+
 HexToBin(X) --> returns Binary base 2
 Description:
-Hexadecimal input should be all small letters.
-Converts hexadecimal base 16 to binary base 2.
+	Hexadecimal input should be all small 
+	letters.
+	Converts hexadecimal base 16 to 
+	binary base 2.
 
 Input types:
-X : Hexadecimal 8 digits (32 bits) (E.g 1ab00000)
---------------------------------------
+	X : Hexadecimal 8 digits (32 bits)
+	    (E.g 1ab00000)
+_________________________________________________
