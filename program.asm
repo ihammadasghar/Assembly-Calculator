@@ -13,7 +13,9 @@
 .data
 empty: .space 16
 menu: .asciiz "\n ------- Welcome! ------- \n Operations table:\n 0 - Help,  16 - Exit\n 1 - ADD,  2 - SUB,  3 - MUL\n 4 - DIV,  5 - POW,  6 - LOG\n 7 - ROOT,  8 - COS,  9 - SIN\n 10 - DecToBin,  11 - DecToHex\n 12 - BinToDec,  13 - BinToHex\n 14 - HexToDec,  15 - HexToBin"
+zeroFloat: .float 0.0
 oneFloatConstant: .float 1.000000
+twoPiFloat: .float 6.283185
 
 #  Operation prompts and errors
 operationPrompt: .asciiz "\n\nChoose Operation: "
@@ -281,6 +283,38 @@ printfile:
 	b start
 	
 # Operations
+mod:
+    # print operation name
+    la $a0,addStr
+    jal printmessage
+    
+    jal oneFloatInput
+    mov.s $f1, $f0
+    jal modfunc
+    b printfloat
+
+    modfunc:
+        # $f1 - D
+        l.s $f2,twoPiFloat # d
+        # $f3 - A
+        l.s $f3, zeroFloat
+
+        # $f5 - 1.0
+        l.s $f5,oneFloatConstant
+
+        modloop:
+            mul.s $f4,$f3,$f2
+            add.s $f3,$f3,$f5 # increment
+            c.lt.s $f4,$f1
+            bc1t modloop
+        
+        sub.s $f3,$f3,$f5 # A - 1
+        sub.s $f3,$f3,$f5 # A - 1
+        mul.s $f4,$f2,$f3 # d*A
+        sub.s $f12,$f1,$f4 # R = D - (d*A)
+        jr $ra
+
+
 sum:
     # print operation name
     la $a0,addStr
@@ -663,9 +697,18 @@ cos:
     jal printmessage
    
     # Take input x
-    li $v0,6
-    syscall 
+    jal oneFloatInput
 
+    l.s $f1,twoPiFloat
+    c.lt.s $f0,$f1
+    bc1t startcos
+    
+    normalizeCosInput:
+        mov.s $f1,$f0 # move mod function argument to f1
+        jal modfunc
+        mov.s $f0,$f12 # move the remainder to $f0
+
+    startcos:
     # f0 - x
     l.s $f1,oneFloatConstant # x1
     mov.s $f12,$f1 # cosx
@@ -703,11 +746,20 @@ sin:
     jal printmessage
     
     # Take input x
-    li $v0,6
-    syscall 
+    jal oneFloatInput
+
+    l.s $f1,twoPiFloat
+    c.lt.s $f0,$f1
+    bc1t startsin
+    
+    normalizeSinInput:
+        mov.s $f1,$f0 # move mod function argument to f1
+        jal modfunc
+        mov.s $f0,$f12 # move the remainder to $f0
+
+    startsin:
 
     # f0 - x
-
     mov.s $f1,$f0 # x1
     mov.s $f12,$f0 # sinx
 
