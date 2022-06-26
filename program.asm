@@ -145,7 +145,7 @@ twoinputs:
     syscall 
     move $a2,$v0
     jr $ra
-    
+        
 help:
     la $a0,helpstr
     jal printmessage
@@ -291,12 +291,16 @@ divide:
     la $a0,divstr
     jal printmessage
     
-    jal twoinputs
+    jal twoinputs  
     jal divfunc
-    b print
-
+    b printfloat
+    
     divfunc:
-        div $v1,$a1,$a2
+        mtc1 $a1, $f1
+    	cvt.s.w $f1, $f1 
+    	mtc1 $a2, $f2
+    	cvt.s.w $f2, $f2 
+        div.s $f12,$f1,$f2
         jr $ra
 
 
