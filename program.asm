@@ -122,8 +122,30 @@ oneFloatInput:
     # save num A
     li $v0,6
     syscall 
-    move $a1,$v0
     jr $ra
+
+
+# Getting two input float from the user
+twoFloatInputs:
+    la $a0, input1Str
+    li $v0,4
+    syscall
+
+    # save num A
+    li $v0,6
+    syscall 
+    mov.s $f1,$f0
+
+    la $a0, input2Str
+    li $v0,4
+    syscall
+
+    # save num b
+    li $v0,6
+    syscall 
+    mov.s $f2,$f0
+    jr $ra
+
 
 # Getting two inputs from the user
 twoinputs:
@@ -145,7 +167,8 @@ twoinputs:
     syscall 
     move $a2,$v0
     jr $ra
-        
+
+                
 help:
     la $a0,helpstr
     jal printmessage
@@ -291,17 +314,9 @@ divide:
     la $a0,divstr
     jal printmessage
     
-    jal twoinputs  
-    jal divfunc
+    jal twoFloatInputs  
+    div.s $f12,$f1,$f2
     b printfloat
-    
-    divfunc:
-        mtc1 $a1, $f1
-    	cvt.s.w $f1, $f1 
-    	mtc1 $a2, $f2
-    	cvt.s.w $f2, $f2 
-        div.s $f12,$f1,$f2
-        jr $ra
 
 
 multi:
