@@ -4,8 +4,8 @@
 # GRUPO:
 # 30008767 - Syed Hammad Ur Rehman Asghar
 # 30009658 - Duarte Miguel dos Santos Rodrigues
-# Ahmet add your name here
-# Jorge add your name here
+# 30010007 - Ahmet Metin Birsen
+# 30008541 - Jorge Chaves
 #
 # NOTE: The "Help" folder should be in path "c:\" for the help function to work. 
 #######################################################################################################################
@@ -16,7 +16,7 @@ menu: .asciiz "\n ------- Welcome! ------- \n Operations table:\n 0 - Help,  16 
 oneFloatConstant: .float 1.000000
 
 #  Operation prompts and errors
-nextline: .asciiz "\n\nChoose Operation: "
+operationPrompt: .asciiz "\n\nChoose Operation: "
 input1Str: .asciiz "\nArg 1: "
 input2Str: .asciiz "Arg 2: "
 res: .asciiz " Ans = "
@@ -64,7 +64,7 @@ fileWords: .space 1024
 
 
 .text
-    #  Print message
+    #  Print menu
     li $v0,4
     la $a0,menu
 
@@ -73,7 +73,7 @@ start:
     
     # Go to next line
     li $v0,4
-    la $a0,nextline
+    la $a0,operationPrompt
     syscall
 
     # Get operation number
