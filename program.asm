@@ -23,10 +23,10 @@ res: .asciiz " Ans = "
 new_line: .asciiz "\n"
 helpstr: .asciiz "-> Help(operation number): "
 helpErrorStr: .asciiz "Error: No such operation number."
-addstr: .asciiz "-> ADD(a,b): "
-substr: .asciiz "-> SUB(a,b): "
-mulstr: .asciiz "-> MUL(a,b): "
-divstr: .asciiz "-> DIV(a,b): "
+addStr: .asciiz "-> ADD(a,b): "
+subStr: .asciiz "-> SUB(a,b): "
+mulStr: .asciiz "-> MUL(a,b): "
+divStr: .asciiz "-> DIV(a,b): "
 DecToBinStr: .asciiz "-> DecToBin(Decimal): "
 DecToHexStr: .asciiz "-> DecToHex(Decimal): "
 BinToDecStr: .asciiz "-> BinToDec(Binary): "
@@ -34,13 +34,13 @@ BinToHexStr: .asciiz "-> BinToHex(Binary): "
 HexToDecStr: .asciiz "-> HexToDec(Hex): "
 HexToBinStr: .asciiz "-> HexToBin(Hex): "
 HexToDecErrorStr: .asciiz "Error: You have entered in an incorrect form, make sure everything is inbetween 0 to 9 and a to f (small letters).\n"
-expstr: .asciiz "-> Power(base, power): "
+expStr: .asciiz "-> Power(base, power): "
 LogStr: .asciiz "-> LOG(base, X): "
 LogErrorStr: .asciiz "Error: Couldn't calculate log. "
 rootstr: .asciiz "-> ROOT(X, root power): "
 RootErrorStr: .asciiz "Error: Couldn't calculate root."
-cosstr: .asciiz "-> COS(X): "
-sinstr: .asciiz "-> SIN(X): "
+cosStr: .asciiz "-> COS(X): "
+sinStr: .asciiz "-> SIN(X): "
 
 #  Help file addresses
 sumHelpFile: .asciiz "C:/help/sumHelpFile.txt"
@@ -148,7 +148,7 @@ twoFloatInputs:
 
 
 # Getting two inputs from the user
-twoinputs:
+twoInputs:
     la $a0, input1Str
     li $v0,4
     syscall
@@ -283,10 +283,10 @@ printfile:
 # Operations
 sum:
     # print operation name
-    la $a0,addstr
+    la $a0,addStr
     jal printmessage
     
-    jal twoinputs
+    jal twoInputs
     jal sumfunc
     b print
 
@@ -297,10 +297,10 @@ sum:
 
 subt:
     # print operation name
-    la $a0,substr
+    la $a0,subStr
     jal printmessage
     
-    jal twoinputs
+    jal twoInputs
     jal subfunc
     b print
 
@@ -311,7 +311,7 @@ subt:
 
 divide:
     # print operation name
-    la $a0,divstr
+    la $a0,divStr
     jal printmessage
     
     jal twoFloatInputs  
@@ -321,10 +321,10 @@ divide:
 
 multi:
     # print operation name
-    la $a0,mulstr
+    la $a0,mulStr
     jal printmessage
     
-    jal twoinputs
+    jal twoInputs
     jal multfunc
     b print
 
@@ -561,10 +561,10 @@ hexToBin:
 
 exponent:
     # print operation name
-    la $a0,expstr
+    la $a0,expStr
     jal printmessage
     
-    jal twoinputs
+    jal twoInputs
     jal expfunc
     b print
 
@@ -587,7 +587,7 @@ log:
     la $a0,LogStr
     jal printmessage
 
-    jal twoinputs
+    jal twoInputs
     move $t1, $a1  # base
     move $t2, $a2  # x
 
@@ -621,7 +621,7 @@ root:
     la $a0,rootstr
     jal printmessage
     
-    jal twoinputs
+    jal twoInputs
     jal rootfunc
 
     rootfunc:
@@ -659,7 +659,7 @@ root:
 
 cos:
     # print operation name
-    la $a0,cosstr
+    la $a0,cosStr
     jal printmessage
    
     # Take input x
@@ -699,7 +699,7 @@ cos:
 
 sin:
     # print operation name
-    la $a0,sinstr
+    la $a0,sinStr
     jal printmessage
     
     # Take input x
