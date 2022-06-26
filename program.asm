@@ -12,7 +12,8 @@
 
 .data
 empty: .space 16
-menu: .asciiz "\n ------- Welcome! ------- \n Operations table:\n 0 - Help,  16 - Exit\n 1 - ADD,  2 - SUB,  3 - MUL\n 4 - DIV,  5 - POW,  6 - LOG\n 7 - ROOT,  8 - COS,  9 - SIN\n 10 - DecToBin,  11 - DecToHex\n 12 - BinToDec,  13 - BinToHex\n 14 - HexToDec,  15 - HexToBin"
+menuFile: .asciiz "C:/help/menuFile.txt"
+blankFile: .asciiz "C:/help/blank.txt"
 zeroFloat: .float 0.0
 oneFloatConstant: .float 1.000000
 twoPiFloat: .float 6.283185
@@ -66,9 +67,9 @@ fileWords: .space 1024
 
 
 .text
-    #  Print menu
-    li $v0,4
-    la $a0,menu
+printMenu:
+    la $a0,menuFile
+    b printfile
 
 start:
     syscall 
@@ -102,6 +103,7 @@ start:
     beq $t0,14, hexToDec
     beq $t0,15, hexToBin
     beq $t0,16, exit
+    beq $t0,17, printMenu
 
 
 # Getting one input string from the user
@@ -262,8 +264,8 @@ printfile:
 	li $v0,13  # open_file syscall code = 13    	
 	li $a1,0  # file flag = read (0)
     	
-    syscall
-    move $s0,$v0  # save the file descriptor. $s0 = file
+        syscall
+        move $s0,$v0  # save the file descriptor. $s0 = file
 	
 	#read the file
 	li $v0, 14		# read_file syscall code = 14
@@ -278,8 +280,31 @@ printfile:
 	syscall
 	
 	#Close the file
-    li $v0, 16         		# close_file syscall code
-    move $a0,$s0      		# file descriptor to close
+    	li $v0, 16         		# close_file syscall code
+    	move $a0,$s0      		# file descriptor to close
+	syscall
+	
+	# Clear registers
+	la $a0,blankFile
+	
+	li $v0,13  # open_file syscall code = 13    	
+	li $a1,0  # file flag = read (0)
+    	
+        syscall
+        move $s0,$v0  # save the file descriptor. $s0 = file
+	
+	#read the file
+	li $v0, 14		# read_file syscall code = 14
+	move $a0,$s0		# file descriptor
+	la $a1,fileWords  	# The buffer that holds the string of the WHOLE file
+	la $a2,1024		# hardcoded buffer length
+	syscall
+	
+	la $a0,fileWords
+	
+	#Close the file
+    	li $v0, 16         		# close_file syscall code
+    	move $a0,$s0      		# file descriptor to close
 	b start
 	
 # Operations

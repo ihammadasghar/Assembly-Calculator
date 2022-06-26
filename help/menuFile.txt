@@ -1,0 +1,12 @@
+
+ ________________Welcome!__________________
+ 
+Operations table:
+	0 - Help,  16 - Exit, 17 - Menu
+	1 - ADD,  2 - SUB,  3 - MUL
+	4 - DIV,  5 - POW,  6 - LOG
+	7 - ROOT,  8 - COS,  9 - SIN
+	10 - DecToBin,  11 - DecToHex
+	12 - BinToDec,  13 - BinToHex
+	14 - HexToDec,  15 - HexToBin
+___________________________________________
